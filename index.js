@@ -3,17 +3,21 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
+app.use(express.static('public'));
 
 app.get('/api/categories', (req, res) => {
-  res.sendFile(__dirname + '/data/categories_db.json');
+  const data = require('./data/categories_db.json');
+  res.json(data);
 });
 
 app.get('/api/articles', (req, res) => {
-  res.sendFile(__dirname + '/data/articles_db.json');
+  const data = require('./data/articles_db.json');
+  res.json(data);
 });
 
 app.get('/api/users', (req, res) => {
-  res.sendFile(__dirname + '/data/users_db.json');
+  const data = require('./data/users_db.json');
+  res.json(data);
 });
 
 const PORT = process.env.PORT || 3001;
