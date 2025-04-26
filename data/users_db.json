@@ -1,0 +1,1 @@
+{"error":{"id":"403.001","code":"Forbidden","message":"Access forbidden","data":{"issues":[{"path":"session.user","rule":"required","message":"Требуется авторизация"}]}}}
