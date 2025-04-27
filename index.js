@@ -3,12 +3,10 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: [
-    'http://localhost:8010',
-    'https://your-client-domain.vercel.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: 'http://localhost:8010',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  exposedHeaders: ['X-Request-Id']
 }));
 app.use(express.static('public'));
 
@@ -37,12 +35,32 @@ app.get('/api/articles/:id', (req, res) => {
         status: 404
       });
     }
-    res.json({ result: article });
+
+    const fields = req.query.fields?.split(',') || [];
+    const response = {};
+
+    fields.forEach(field => {
+      if (field === 'madeIn') {
+        response.madeIn = {
+          title: article.madeIn?.title || 'Не указано',
+          code: article.madeIn?.code || 'N/A'
+        };
+      } else if (field === 'category') {
+        response.category = {
+          title: article.category?.title || 'Без категории'
+        };
+      } else {
+        response[field] = article[field];
+      }
+    });
+
+    res.json({ result: response });
+
   } catch (e) {
     console.error('Ошибка сервера:', e);
-    res.status(500).json({
+    res.status(500).json({ 
       error: 'Internal Server Error',
-      details: e.message
+      details: e.message 
     });
   }
 });
