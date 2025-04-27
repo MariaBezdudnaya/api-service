@@ -2,7 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:8010',
+    'https://your-client-domain.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.static('public'));
 
 app.get('/api/categories', (req, res) => {
@@ -21,10 +28,22 @@ app.get('/api/users', (req, res) => {
 });
 
 app.get('/api/articles/:id', (req, res) => {
-  const data = articles.find(item => item._id === req.params.id);
-  res.json({
-    result: data
-  });
+  try {
+    const article = article.find(item => item._id === req.params.id);
+    if (!article) {
+      return res.status(404).json({ 
+        error: 'Article not found',
+        status: 404
+      });
+    }
+    res.json({ result: article });
+  } catch (e) {
+    console.error('Ошибка сервера:', e);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      details: e.message
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3001;
