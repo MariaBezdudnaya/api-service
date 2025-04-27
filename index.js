@@ -20,6 +20,13 @@ app.get('/api/users', (req, res) => {
   res.json(data);
 });
 
+app.get('/api/articles/:id', (req, res) => {
+  const data = articles.find(item => item._id === req.params.id);
+  res.json({
+    result: data
+  });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
