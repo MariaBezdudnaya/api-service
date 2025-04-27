@@ -29,7 +29,8 @@ app.get('/api/users', (req, res) => {
 
 app.get('/api/articles/:id', (req, res) => {
   try {
-    const article = article.find(item => item._id === req.params.id);
+    const data = require('./data/articles_db.json');
+    const article = res.json(data).find(item => item._id === req.params.id);
     if (!article) {
       return res.status(404).json({ 
         error: 'Article not found',
